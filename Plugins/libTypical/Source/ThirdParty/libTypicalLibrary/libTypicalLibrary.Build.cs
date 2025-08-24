@@ -8,10 +8,12 @@ public class libTypicalLibrary : ModuleRules
 	public libTypicalLibrary(ReadOnlyTargetRules Target) : base(Target)
 	{
 		Type = ModuleType.External;
-		//PublicSystemIncludePaths.Add("$(ModuleDir)/Public");
+		//PublicSystemIncludePaths.Add("$(ModuleDir)/Include");
 
         string IncludePath_libTypical = Path.Combine(ModuleDirectory, "Include");
         string LibPath_libTypical = Path.Combine(ModuleDirectory, "Lib");
+
+        System.Console.WriteLine("libTypical IncludePath: " + IncludePath_libTypical);
 
         // 区分平台
         string LibraryFilePath_libTypical = "";

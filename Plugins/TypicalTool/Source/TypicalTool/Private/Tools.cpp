@@ -12,6 +12,13 @@ Tools::~Tools()
 {
 }
 
+#if defined(CreateDirectory)
+#   undef CreateDirectory
+#endif
+#if defined(DeleteFile)
+#   undef DeleteFile
+#endif
+
 void Tools::Init()
 {
 	// 确保目录存在
@@ -28,7 +35,7 @@ void Tools::Init()
 
 	// 截断文件
 	FString FullPath = FPaths::Combine(LogFilePath, LogFileName);
-	if (!PlatformFile.DeleteFile(*FullPath)) { 
+	if (!PlatformFile.DeleteFile(*FullPath)) {
 		UE_LOG(LogTemp, Error, TEXT("Tools::Init: 无法截断文件[%s]!"), *FullPath);
 		FFileHelper::SaveStringToFile(FString::Printf(TEXT("Tools::Init: 无法截断文件[%s]!\n"), *FullPath), *FullPath, FFileHelper::EEncodingOptions::ForceUTF8,
 			&IFileManager::Get(), FILEWRITE_Append);

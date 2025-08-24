@@ -232,6 +232,13 @@ void UTypicalToolBPLib::QuitGame(FString CallStack)
 	//FGenericPlatformMisc::RequestExit(false);
 }
 
+#if defined(CreateDirectory)
+#   undef CreateDirectory
+#endif
+#if defined(DeleteFile)
+#   undef DeleteFile
+#endif
+
 bool UTypicalToolBPLib::CreateDirectory(FString _CreateFolderName, FString _TargetFolderPath)
 {
 	// 组合成完整的路径: 获取内容目录的路径 + 创建的文件夹名称
@@ -240,19 +247,19 @@ bool UTypicalToolBPLib::CreateDirectory(FString _CreateFolderName, FString _Targ
 
 	// 检查文件夹是否存在
 	if (!PlatformFile.DirectoryExists(*NewFolderPath)) {
-		bool bSuccess = PlatformFile.CreateDirectory(*NewFolderPath); // 创建文件夹
+		bool bSuccess = (PlatformFile.CreateDirectory)(*NewFolderPath); // 创建文件夹
 		if (bSuccess) {
-			DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 成功创建文件夹：[%s]"), *NewFolderPath), FColor::Green);
+			UEtytl::DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 成功创建文件夹：[%s]"), *NewFolderPath), FColor::Green);
 
 			return true;
 		}
 		else {
-			DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 无法创建文件夹：[%s]"), *NewFolderPath), FColor::Yellow);
+			UEtytl::DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 无法创建文件夹：[%s]"), *NewFolderPath), FColor::Yellow);
 			return false;
 		}
 	}
 	else {
-		DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 文件夹已存在：[%s]"), *NewFolderPath));
+		UEtytl::DebugLog(FString::Printf(TEXT("UTypicalToolBPLib::CreateDirectory: 文件夹已存在：[%s]"), *NewFolderPath));
 		return true;
 	}
 }

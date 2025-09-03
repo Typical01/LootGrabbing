@@ -13,7 +13,7 @@ class Tools
 {
 public:
 	FString LogFilePath { FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Config")) };
-	FString LogFileName { TEXT("Log_TypicalTool.log") };
+	FString LogFileName { TEXT("Log_TypicalLootGrabbing.log") };
 	bool bInit = false;
 	FCriticalSection FileWriteMutex;
 	bool bShowScreen = false; //显示到屏幕上

@@ -23,7 +23,8 @@ class TYPICALTOOL_API UListViewBaseDataManage : public UObject
 {
 	GENERATED_BODY()
 public:
-    TArray<UObject*> ViewDataArray; //视图数据: 数组
+	UPROPERTY()
+    TArray<TObjectPtr<UObject>> ViewDataArray; //视图数据: 数组
 
 public:
     UFUNCTION(BlueprintCallable, Category = "View")
@@ -38,7 +39,7 @@ public:
 	virtual void SetList() PURE_VIRTUAL(UListViewBaseDataManage::SetList, );
     UFUNCTION(BlueprintCallable, Category = "View")
 	virtual void SetListAt(const TArray<UObject*>& OtherViewDataArray) PURE_VIRTUAL(UListViewBaseDataManage::SetListAt, );
-
+	
 public:
 
 	/** 添加对象
@@ -46,6 +47,12 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category = "View")
 	void Add(UObject* Item);
+
+	/** 修改在列表中索引的对象
+	* @param 需要修改的列表对象索引
+	*/
+	UFUNCTION(BlueprintCallable, Category = "View")
+	void Set(int32 Index, UObject* Item);
 
 	/** 查找对象在列表中的索引
 	* @param 需要查找的列表对象
@@ -110,9 +117,9 @@ public:
 	virtual void SetView(UListViewBase* InView) override;
 	virtual void SetList() override;
 	virtual void SetListAt(const TArray<UObject*>& OtherViewDataArray) override;
-	UFUNCTION(BlueprintCallable, Category = "View")
 	UListView* GetView() { return ListView; }
 
+	UFUNCTION(BlueprintCallable, Category = "View")
 	virtual void RegenerateAllEntries();
 };
 
@@ -157,5 +164,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "View")
 	UTileView* GetView() { return TileView; }
 
+	UFUNCTION(BlueprintCallable, Category = "View")
 	virtual void RegenerateAllEntries();
 };

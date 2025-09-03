@@ -6,7 +6,7 @@
 #include <chrono>
 
 #include "TypicalTool/Public/TypicalToolBPLib.h"
-#include "TypicalTool/Tool.h"
+//#include "TypicalTool/Tool.h"
 
 
 
@@ -22,7 +22,7 @@ int64 Gacha::Initialize(const TArray<double>& _ProbabilityDistributionGather)
 		ProbabilityDistributionGather[i] = _ProbabilityDistributionGather[i];
 		SumSum += _ProbabilityDistributionGather[i];
 	}
-	if (!SumSum == 1.0)
+	if (SumSum != 1.0)
 	{
 		return SumSum;
 	}
@@ -34,7 +34,7 @@ int64 Gacha::Initialize(const TArray<double>& _ProbabilityDistributionGather)
 	Uniform = tempReal;
 
 	//使用当前时间作为随机数种子
-	RandomEngine.seed(std::chrono::duration_cast<tytl::time::sec>(tytl::Timer::GetTime().time_since_epoch()).count());
+	RandomEngine.seed(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
 	return 1;
 }
 
@@ -125,8 +125,8 @@ void Gacha::StratGacha(int64 Count)
 
 void Gacha::PrintProbability()
 {
-	UEtytl::DebugLog(tytl::Printf(TEXT("Gacha::PrintProbability: 概率\n\
-\t白(%s)%, 绿(%s)%, 蓝(%s)%, 紫(%s)%, \n\t粉(%s)%, 金(%s)%, 红(%s)%, 橙(%s)%."),
+	UEtytl::DebugLog(FString::Printf(TEXT("Gacha::PrintProbability: 概率\n\
+\t白(%f)%, 绿(%f)%, 蓝(%f)%, 紫(%f)%, \n\t粉(%f)%, 金(%f)%, 红(%f)%, 橙(%f)%."),
 ProbabilityDistributionGather[0] * 100,
 ProbabilityDistributionGather[1] * 100,
 ProbabilityDistributionGather[2] * 100,
@@ -134,7 +134,7 @@ ProbabilityDistributionGather[3] * 100,
 ProbabilityDistributionGather[4] * 100,
 ProbabilityDistributionGather[5] * 100,
 ProbabilityDistributionGather[6] * 100,
-ProbabilityDistributionGather[7] * 100).ToString());
+ProbabilityDistributionGather[7] * 100));
 }
 
 void Gacha::PrintCountOnce()
@@ -143,8 +143,8 @@ void Gacha::PrintCountOnce()
 	for (auto& temp : ProbabilityCountGather) {
 		Sum += temp;
 	}
-	UEtytl::DebugLog(tytl::Printf(TEXT("Gacha::PrintProbability: 单次计数[%s]\n\
-\t白(%s), 绿(%s), 蓝(%s), 紫(%s), \n\t粉(%s), 金(%s), 红(%s), 橙(%s)."),
+	UEtytl::DebugLog(FString::Printf(TEXT("Gacha::PrintProbability: 单次计数[%lld]\n\
+\t白(%lld), 绿(%lld), 蓝(%lld), 紫(%lld), \n\t粉(%lld), 金(%lld), 红(%lld), 橙(%lld)."),
 Sum,
 ProbabilityCountGather[0],
 ProbabilityCountGather[1],
@@ -153,7 +153,7 @@ ProbabilityCountGather[3],
 ProbabilityCountGather[4],
 ProbabilityCountGather[5],
 ProbabilityCountGather[6],
-ProbabilityCountGather[7]).ToString());
+ProbabilityCountGather[7]));
 }
 
 void Gacha::PrintCountSum()
@@ -162,8 +162,8 @@ void Gacha::PrintCountSum()
 	for (auto& temp : ProbabilityCountGatherSum) {
 		Sum += temp;
 	}
-	UEtytl::DebugLog(tytl::Printf(TEXT("Gacha::PrintCountSum: 总共计数[%s]\n\
-\t白(%s), 绿(%s), 蓝(%s), 紫(%s), \n\t粉(%s), 金(%s), 红(%s), 橙(%s)."),
+	UEtytl::DebugLog(FString::Printf(TEXT("Gacha::PrintCountSum: 总共计数[%lld]\n\
+\t白(%lld), 绿(%lld), 蓝(%lld), 紫(%lld), \n\t粉(%lld), 金(%lld), 红(%lld), 橙(%lld)."),
 Sum,
 ProbabilityCountGatherSum[0],
 ProbabilityCountGatherSum[1],
@@ -172,7 +172,7 @@ ProbabilityCountGatherSum[3],
 ProbabilityCountGatherSum[4],
 ProbabilityCountGatherSum[5],
 ProbabilityCountGatherSum[6],
-ProbabilityCountGatherSum[7]).ToString());
+ProbabilityCountGatherSum[7]));
 }
 
 void Gacha::Output()
@@ -183,28 +183,28 @@ void Gacha::Output()
 
 void Gacha::PrintPrizeCountRaw()
 {
-	UEtytl::DebugLog(tytl::Printf(TEXT("Gacha::PrintCountRaw: tempRawPrize[%s]"), tempRawPrize.Num()).ToString());
+	UEtytl::DebugLog(FString::Printf(TEXT("Gacha::PrintCountRaw: tempRawPrize[%d]"), tempRawPrize.Num()));
 	for (int i = 0; i < tempRawPrize.Num(); i++)
 	{
-		UEtytl::DebugLog(tytl::Printf(TEXT("\tIndex[%s]: %s"), i, *TransformProbabilityToString(static_cast<GachaProbability>(tempRawPrize[i]))).ToString());
-	}
+		UEtytl::DebugLog(FString::Printf(TEXT("\tIndex[%d]: %s"), i, *TransformProbabilityToString(static_cast<GachaProbability>(tempRawPrize[i]))));
+	} //
 }
 
 void Gacha::PrintProbabilityCountRaw()
 {
 	double tempMin = 1.f;
 
-	UEtytl::DebugLog(tytl::Printf(TEXT("Gacha::PrintProbabilityCountRaw: tempRawProbability[%s]"), tempRawProbability.Num()).ToString());
+	UEtytl::DebugLog(FString::Printf(TEXT("Gacha::PrintProbabilityCountRaw: tempRawProbability[%d]"), tempRawProbability.Num()));
 	for (int i = 0; i < tempRawProbability.Num(); i++)
 	{
 		if (Min(tempMin, tempRawProbability[i]) == 0)
 		{
 			tempMin = tempRawProbability[i];
 		}
-		UEtytl::DebugLog(tytl::Printf(TEXT("\t%s, "), tempRawProbability[i]).ToString());
+		UEtytl::DebugLog(FString::Printf(TEXT("\t%f, "), tempRawProbability[i]));
 	}
 
-	UEtytl::DebugLog(tytl::Printf(TEXT("\tMin: %s"), tempMin).ToString());
+	UEtytl::DebugLog(FString::Printf(TEXT("\tMin: %f"), tempMin));
 }
 
 double Gacha::Min(double a, double b)
@@ -255,85 +255,7 @@ FString TransformProbabilityToString(const GachaProbability& _GachaProbability)
 	return FString();
 }
 
-bool IsContainerSlotValid(Goods& _Goods, const PutState& _PutState, TArray<int64> _ContainerArray, int32 _ContainerWidth)
+FString TransformGoodsSlotToString(const GoodsSlot& _GoodsSlot)
 {
-	GoodsSlot Slot = _Goods.GetGoodsSlot();
-
-	switch (Slot) {
-	case GoodsSlot::Slot_1: {
-		if (_ContainerArray[_Goods.GetCurrentSlotIndex()] != 1) { //空余
-			_ContainerArray[_Goods.GetCurrentSlotIndex()] = 1;
-		}
-		else {//占用
-			return false;
-		}
-	}
-	case GoodsSlot::Slot_2: {
-		if (_PutState == PutState::Horizontal) { //水平摆放: 横向2格
-			if (_ContainerArray[_Goods.GetCurrentSlotIndex() + 1] != 1) { //空余
-				_ContainerArray[_Goods.GetCurrentSlotIndex()] = 1;
-				_ContainerArray[_Goods.GetCurrentSlotIndex() + 1] = 1;
-			}
-			else {//占用
-				return false;
-			}
-		}
-		else if (_PutState == PutState::Vertical) { //垂直摆放: 纵向2格
-			if (_ContainerArray[_Goods.GetCurrentSlotIndex() + _ContainerWidth] != 1) { //空余
-				_ContainerArray[_Goods.GetCurrentSlotIndex()] = 1;
-				_ContainerArray[_Goods.GetCurrentSlotIndex() + _ContainerWidth] = 1;
-			}
-			else {//占用
-				return false;
-			}
-		}
-	}
-	}
-
-	return false;
-}
-
-void GachaGame_Goods_Test(Gacha& game)
-{
-	game.PrintProbability(); //打印概率
-	UEtytl::DebugLog(tytl::Printf(TEXT("总概率: %s"),
-		game.Initialize({ 0.3, 0.3, 0.2, 0.1, 0.05, 0.045, 0.049, 0.001 })).ToString());
-
-	int GachaCount = 10; //单次抽卡次数
-
-	game.StratGacha(GachaCount); //开始抽卡
-	game.PrintCountOnce();
-	game.PrintPrizeCountRaw();
-	auto tempArray = game.GetRawPrize();
-	for (int32_t i = 0; i < tempArray.Num(); i++) {
-		auto& tempGoods = tempArray[i];
-		if (tempGoods == GachaProbability::White) {
-			//std::cout << TEXT("\t酸奶 $30");
-		}
-		else if (tempGoods == GachaProbability::Green) {
-			//std::cout << TEXT("\t铜币 $2000");
-		}
-		else if (tempGoods == GachaProbability::Blue) {
-			//std::cout << TEXT("\t银币 $10000");
-		}
-		else if (tempGoods == GachaProbability::Purple) {
-			//std::cout << TEXT("\t牛角 $25000");
-		}
-		else if (tempGoods == GachaProbability::Pink) {
-			//std::cout << TEXT("\t仪式匕首 $100000");
-		}
-		else if (tempGoods == GachaProbability::Gold) {
-			//std::cout << TEXT("\t金币 $60000");
-		}
-		else if (tempGoods == GachaProbability::Red) {
-			//std::cout << TEXT("\t劳力士 $300000");
-		}
-		else if (tempGoods == GachaProbability::Orange) {
-			//std::cout << TEXT("\t非洲之心 $120000000");
-		}
-
-		if (i == 5) {
-			//std::cout << TEXT("\n");
-		}
-	}
+	return FString::Printf(TEXT("%d格"), static_cast<int32>(_GoodsSlot));
 }

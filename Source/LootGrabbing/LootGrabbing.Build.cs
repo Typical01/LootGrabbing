@@ -9,9 +9,18 @@ public class LootGrabbing : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "TypicalTool", "libTypical", "libTypicalLibrary" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange(new string[] {
+                "Json",
+                "JsonUtilities",
+				"UMG",        // for UImage etc.
+				"Slate",      // Slate UI
+				"SlateCore", 
+				"TypicalTool", 
+				//"libTypical", 
+				//"libTypicalLibrary"
+		});
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

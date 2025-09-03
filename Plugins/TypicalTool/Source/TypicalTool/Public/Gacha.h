@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
 
 #include <random>
+#include "Containers/Array.h"
 
+
+//#include "Gacha.generated.h"
 
 
 //奖品概率
@@ -41,9 +43,9 @@ private:
 public:
 	Gacha()
 	{
-		ProbabilityDistributionGather.Init(8, 0);
-		ProbabilityCountGather.Init(8, 0);
-		ProbabilityCountGatherSum.Init(8, 0);
+		ProbabilityDistributionGather.Init(0, 8);
+		ProbabilityCountGather.Init(0, 8);
+		ProbabilityCountGatherSum.Init(0, 8);
 	}
 	~Gacha() {};
 
@@ -95,51 +97,18 @@ private:
 
 
 //物品格数
-enum GoodsSlot : uint8_t {
-	Slot_1 = 0, //1格
-	Slot_2,		//2格
-	Slot_4,		//4格
-	Slot_6,		//6格
-	Slot_9,		//9格
+enum GoodsSlot {
+	Slot_1 = 1,		//1格
+	Slot_2 = 2,		//2格
+	Slot_4 = 4,		//4格
+	Slot_6 = 6,		//6格
+	Slot_9 = 9,		//9格
 };
+FString TransformGoodsSlotToString(const GoodsSlot& _GoodsSlot);
+
 //摆放状态
-enum PutState : uint8_t {
-	Horizontal = 0, //水平
-	Vertical		//垂直
+enum PutState {
+	None = 0,
+	Horizontal, //水平
+	Vertical	//垂直
 };
-
-class Goods
-{
-private:
-	FString GoodsName; //物品名
-	GoodsSlot Slot; //格数
-	int32 CurrentSlotIndex; //当前所在格数索引
-	PutState State; //摆放状态
-
-public:
-	Goods(FString _GoodsName, GoodsSlot _Slot, int32 _CurrentSlotIndex, PutState _State)
-		: GoodsName(_GoodsName), Slot(_Slot), CurrentSlotIndex(_CurrentSlotIndex), State(_State) {
-	}
-
-public:
-	FString GetGoodsName() const { return GoodsName; }
-	GoodsSlot GetGoodsSlot() const { return Slot; }
-	PutState GetPutState() const { return State; }
-	int32 GetCurrentSlotIndex() const { return CurrentSlotIndex; }
-
-	void SetGoodsName(FString& _GoodsName) { GoodsName = _GoodsName; }
-	void SetGoodsSlot(GoodsSlot& _Slot) { Slot = _Slot; }
-	void SetPutState(PutState& _State) { State = _State; }
-	void SetCurrentSlotIndex(int32& _CurrentSlotIndex) { CurrentSlotIndex = _CurrentSlotIndex; }
-};
-
-/// <summary>
-/// 容器槽位是否有效: 根据当前容器剩余槽位, 判断物品摆放状态是否合法
-/// </summary>
-/// <param name="_Goods">物品</param>
-/// <param name="_PutState">摆放状态</param>
-/// <param name="_ContainerArray">容器数组</param>
-/// <param name="_ContainerWidth">容器宽度</param>
-bool IsContainerSlotValid(const Goods& _Goods, const PutState& _PutState, TArray<int32> _ContainerArray, int32 _ContainerWidth);
-
-void GachaGame_Goods_Test(Gacha& game);

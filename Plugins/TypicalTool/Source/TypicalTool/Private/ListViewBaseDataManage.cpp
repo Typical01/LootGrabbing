@@ -11,6 +11,15 @@ void UListViewBaseDataManage::Add(UObject* Item)
     SetList();
 }
 
+void UListViewBaseDataManage::Set(int32 Index, UObject* Item)
+{
+    checkf(ViewDataArray.IsValidIndex(Index),
+        TEXT("UListViewDataManage::Set: The index is out of range! Index=%d Num=%d"),
+        Index, ViewDataArray.Num());
+    ViewDataArray[Index] = Item;
+    SetList();
+}
+
 int32 UListViewBaseDataManage::Find(UObject* Item)
 {
     return ViewDataArray.Find(Item);
@@ -18,10 +27,9 @@ int32 UListViewBaseDataManage::Find(UObject* Item)
 
 UObject* UListViewBaseDataManage::FindIndex(int32 Index)
 {
-    if (ViewDataArray.Num() <= Index) {
-        return nullptr;
-    }
-
+    checkf(ViewDataArray.IsValidIndex(Index),
+        TEXT("UListViewDataManage::Set: The index is out of range! Index=%d Num=%d"),
+        Index, ViewDataArray.Num());
     return ViewDataArray[Index];
 }
 
@@ -34,7 +42,7 @@ int32 UListViewBaseDataManage::Remove(UObject* Item)
 
 bool UListViewBaseDataManage::RemoveAt(int32 Index, int32 Count)
 {
-    if (ViewDataArray.Num() <= Index) {
+    if (Index >= ViewDataArray.Num()) {
         return false;
     }
 
@@ -56,6 +64,7 @@ bool UListViewBaseDataManage::IsEmpty()
 void UListViewBaseDataManage::Empty()
 {
     ViewDataArray.Empty();
+    SetList();
 }
 
 

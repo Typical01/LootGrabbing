@@ -9,8 +9,9 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
-
-#include "Goods.h"
+#include "MediaPlayer.h"
+#include "MediaTexture.h"
+#include "FileMediaSource.h"
 
 #include "GoodsUserWidget.generated.h"
 
@@ -30,10 +31,14 @@ public:
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	virtual void NativeOnItemSelectionChanged(bool bIsSelected) override;
 
+
 	/*
 	* 控件
 	*/
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ImageLoadAnimationIcon; //图像: 物品加载动画图标
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ImageLoadAnimation; //图像: 物品加载动画
 
@@ -46,8 +51,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ImageGoodsQualityColor; //图像: 物品品质颜色
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ImageGoodsSlotBorder; //图像: 物品槽边框
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	//UImage* ImageGoodsSlotBorder; //图像: 物品槽边框
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ImageSlotColor; //图像: 物品槽颜色
@@ -61,15 +66,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MediaSourceIndex = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 FirstIndex = 0; //列表首项
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UMediaPlayer* MediaPlayerQualityLoadAnimation; //媒体播放器: 品质加载动画
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UMediaTexture* MediaTextureQualityLoadAnimation; //媒体纹理: 品质加载动画
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UFileMediaSource* FileSourceQualityLoadAnimation; //媒体文件源: 品质加载动画
 
 	int32 SlotWidth;
+	int32 Slot;
 	FVector2D HorizontalPutState;
 	FVector2D VerticalPutState;
+	FString SlotString;
+	bool bIsNone;
 
 public:
-	void SetTexture(UGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f);
-	void SetMaterial(UGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f);
-	void LoadGoodsImage(class UGoods* _Goods);
+	void SetTexture(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f, bool bIsZoom = true);
+	void SetMaterial(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f);
+	void SetMediaTexture(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName, float _Opacity = 1.f);
+	void LoadGoodsImage(class UTGoods* _Goods);
 };

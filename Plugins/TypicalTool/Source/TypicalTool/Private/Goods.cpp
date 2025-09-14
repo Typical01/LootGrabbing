@@ -55,6 +55,37 @@ void UGoods::Output()
 		State));
 }
 
+int32 UGoods::QuilityTransformInt()
+{
+	if (Quility.Equals(TEXT("空"))) {
+		return 0;
+	}
+	else if (Quility.Equals(TEXT("白"))) {
+		return 1;
+	}
+	else if (Quility.Equals(TEXT("绿"))) {
+		return 2;
+	}
+	else if (Quility.Equals(TEXT("蓝"))) {
+		return 3;
+	}
+	else if (Quility.Equals(TEXT("紫"))) {
+		return 4;
+	}
+	else if (Quility.Equals(TEXT("金"))) {
+		return 5;
+	}
+	else if (Quility.Equals(TEXT("红"))) {
+		return 6;
+	}
+	else if (Quility.Equals(TEXT("橙"))) {
+		return 7;
+	}
+	else {
+		return -1;
+	}
+}
+
 bool UGoods::IsContainerSlotValid(UGoods& _Goods, TArray<int32>& _ContainerArray, int32 _ContainerWidth, const PutState& _PutState)
 {
 	//_ContainerWidth -= 1;

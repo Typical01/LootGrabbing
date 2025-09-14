@@ -2,6 +2,7 @@
 
 using System.IO;
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class LootGrabbing : ModuleRules
 {
@@ -17,7 +18,8 @@ public class LootGrabbing : ModuleRules
 				"UMG",        // for UImage etc.
 				"Slate",      // Slate UI
 				"SlateCore", 
-				"TypicalTool", 
+				"TypicalTool",
+                "MediaAssets",
 				//"libTypical", 
 				//"libTypicalLibrary"
 		});

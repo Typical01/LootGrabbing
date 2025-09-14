@@ -42,6 +42,7 @@ private:
 
 public:
 	Gacha()
+		: tempRawPrize(), tempRawProbability()
 	{
 		ProbabilityDistributionGather.Init(0, 8);
 		ProbabilityCountGather.Init(0, 8);

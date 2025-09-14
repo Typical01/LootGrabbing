@@ -5,11 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "TypicalTool/Public/ListViewBaseDataManage.h"
+#include "LootGrabbingGameInstance.h"
 #include "GoodsUserWidget.h"
-#include "TypicalTool/Public/Gacha.h"
-//#include "TypicalTool/Public/Goods.h"
-#include "LootGrabbingGameModeBase.h"
 
 #include "ContainerQueueUserWidget.generated.h"
 
@@ -25,8 +22,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UGoodsUserWidget> GoodsUserWidget; //物品UI
 
-	UPROPERTY()
-	TObjectPtr<ALootGrabbingGameModeBase> LootGrabbingGameModeBase;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<ULootGrabbingGameInstance> LootGrabbingGameInstance; //游戏实例
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -49,20 +46,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTileView* TileViewContainerSlot; //瓦片视图: 容器(保险箱)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileViewDataManage* TileViewDataManageContainerSlot; //瓦片视图数据处理: 容器
 	TArray<int32> TArrayContainerSlot;
+	TArray<double> ProbabilitiesArray;
+	Gacha* GachaGame;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 GachaNum = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ContainerSlotWidth = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ContainerSlotHigth = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ContainerSlotRandRangeMaxSize = 8;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 EndSlot = 0; //索引: 添加最后一个物品的位置
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTileView* TileViewWareHouseSlot; //瓦片视图: 仓库
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileViewDataManage* TileViewDataManageWareHouseSlot; //瓦片视图数据处理: 仓库
 	TArray<int32> TArrayWareHouseSlot; //仓库: 占用情况
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 WareHouseSlotSize = 1000; //仓库: 大小
@@ -70,26 +69,6 @@ public:
 	int32 WareHouseSlotWidth = 10; //仓库: 宽度
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 WareHouseSlotEndGoodsIndex = 0; //仓库: 最后添加物品的索引
-
-public:
-	TSharedPtr<FJsonObject> GameConfig;
-	Gacha* GachaGame;
-	TArray<double> ProbabilitiesArray;
-
-	UPROPERTY()
-	TArray<UGoods*> OrangeGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> RedGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> GoldGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> PurpleGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> BlueGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> GreenGoodsArray;
-	UPROPERTY()
-	TArray<UGoods*> WhiteGoodsArray;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int64 Property = 1000000; //哈夫币
@@ -101,29 +80,27 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gacha")
 	bool Init();
+	//容器初始化
 	UFUNCTION(BlueprintCallable, Category = "Gacha")
-	bool FillListView();
+	void InitContainer();
+	//开始抽卡
+	UFUNCTION(BlueprintCallable, Category = "Gacha")
+	int32 StartGacha();
+	//填充列表视图
+	UFUNCTION(BlueprintCallable, Category = "Gacha")
+	bool FillListView(int32 _Num);
 	
 	//计算物品占用的格子
-	TArray<int32> OccupySlot(UGoods* _Goods, int32 ContainerWidth, int32 ContainerHeight);
+	TArray<int32> OccupySlot(UTGoods* _Goods, int32 ContainerWidth, int32 ContainerHeight);
 	//移动物品
-	bool MoveGoods(UGoods* _Goods, FVector2D _MoveSlot, TArray<int32>& _OccupySlot, int32 ContainerWidth, int32 ContainerHeight);
+	bool MoveGoods(UTGoods* _Goods, FVector2D _MoveSlot, TArray<int32>& _OccupySlot, int32 ContainerWidth, int32 ContainerHeight);
 	//填充物品到容器
-	void FillSlot(UGoods* _Goods, TArray<int32>& _OccupySlot, TArray<int32>& _TArrayContainerSlot, UTileViewDataManage* _TileViewDataManage);
-
+	void FillSlot(UTGoods* _Goods, TArray<int32>& _OccupySlot, TArray<int32>& _TArrayContainerSlot, UTileViewDataManage* _TileViewDataManage);
 	//根据奖励分配对应品质的物品
-	UGoods* PrizeAllocation(GachaProbability _Goods, int32 _SlotIndex);
-
-	bool HorizontalPut(UGoods* _Goods, TArray<int32>& _ContainerArray, bool _bIsQuit = true);
-	bool VerticalPut(UGoods* _Goods, TArray<int32>& _ContainerArray, bool _bIsQuit = true);
-
-	bool IsContainerSlotValid(UGoods* _Goods, TArray<int32>& _OccupySlot, TArray<int32>& _ContainerArray);
+	UTGoods* PrizeAllocation(GachaProbability _Goods, int32 _SlotIndex);
+	//容器格子是否有效
+	bool IsContainerSlotValid(UTGoods* _Goods, TArray<int32>& _OccupySlot, TArray<int32>& _ContainerArray);
 
 public:
-	bool ExtractProbabilities(const TSharedPtr<FJsonObject>& _GameConfig, TArray<double>& OutProbabilities);
-	bool ExtractItemsByQuality(const TSharedPtr<FJsonObject>& _GameConfig, const FString& Quality, TArray<UGoods*>& OutItems);
-
 	void LoadSettingConfigFile();
-	void CreateConfigFile();
-	void SaveConfigFile();
 };

@@ -12,7 +12,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class TYPICALTOOL_API UGoods : public UObject
 {
 	GENERATED_BODY()
@@ -29,30 +29,50 @@ private:
 	UGoods* SlotOccupGoodsPtr;
 
 public:
-	UGoods(const FObjectInitializer&) {}
+	UGoods() {}
+	UGoods(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
 
 	void Init(FString _Name, FString _Quility, GoodsSlot _Slot, int32 _SlotLength, int64 _Value);
 	void Copy(const UGoods* Data);
 	void Output();
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	FString GetName() const { return Name; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	FString GetQuility() const { return Quility; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	int64 GetValue() const { return Value; }
 	GoodsSlot GetSlot() const { return Slot; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	int32 GetSlotLength() const { return SlotLength; }
 	PutState GetPutState() const { return State; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	int32 GetCurrentSlotIndex() const { return CurrentSlotIndex; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	UGoods* GetSlotOccupGoodsPtr() const { return SlotOccupGoodsPtr; }
 
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetName(FString _Name) { Name = _Name; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetQuility(FString _Quility) { Quility = _Quility; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetValue(int64 _Value) { Value = _Value; }
 	void SetSlot(GoodsSlot _Slot) { Slot = _Slot; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetSlotLength(int32 _SlotLength) { SlotLength = _SlotLength; }
 	void SetPutState(PutState _State) { State = _State; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetCurrentSlotIndex(int32 _CurrentSlotIndex) { CurrentSlotIndex = _CurrentSlotIndex; }
+	UFUNCTION(BlueprintCallable, Category = "Goods")
 	void SetSlotOccupGoodsPtr(UGoods* _SlotOccupGoodsPtr) { SlotOccupGoodsPtr = _SlotOccupGoodsPtr; }
+
+	/// <summary>
+	/// 返回品质索引: -1(其他) / 0(空) / 1~7(品质)
+	/// </summary>
+	/// <returns></returns>
+	UFUNCTION(BlueprintCallable, Category = "Goods")
+	int32 QuilityTransformInt();
 
 	/// <summary>
 	/// 容器槽位是否有效: 根据当前容器剩余槽位, 判断物品摆放状态是否合法

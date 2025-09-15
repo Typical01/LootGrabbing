@@ -19,6 +19,7 @@ void ULootGrabbingGameInstance::Init()
 	if (!UEtytl::ReadJsonFile(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Config/Config.json")), GameConfig, ErrorMessage)) {
 		if (ErrorMessage.Equals(TEXT("文件错误"))) { //没有文件
 			CreateConfigFile();
+			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 创建配置文件!")));
 		}
 		else if (ErrorMessage.Equals(TEXT("非文件错误"))) { //Json格式错误
 			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: Json格式错误!")));
@@ -32,100 +33,100 @@ void ULootGrabbingGameInstance::Init()
 	TileViewDataManageWareHouseSlot = NewObject<UTileViewDataManage>();
 
 	//媒体资源初始化
-	// 颜色索引：0 为空, 1..7 为下面顺序
-	TArray<FString> ColorNames = {
-		TEXT(""), // 0 空
-		TEXT("白"),
-		TEXT("绿"),
-		TEXT("蓝"),
-		TEXT("紫"),
-		TEXT("金"),
-		TEXT("红"),
-		TEXT("橙")
-	};
+	//颜色索引：0 为空, 1..7 为下面顺序
+	//TArray<FString> ColorNames = {
+	//	TEXT(""), // 0 空
+	//	TEXT("白"),
+	//	TEXT("绿"),
+	//	TEXT("蓝"),
+	//	TEXT("紫"),
+	//	TEXT("金"),
+	//	TEXT("红"),
+	//	TEXT("橙")
+	//};
 
-	const int32 Num = ColorNames.Num(); // 8
-	FileSources.SetNum(Num);
-	MediaPlayers.SetNum(Num);
-	MediaTextures.SetNum(Num);
+	//const int32 Num = ColorNames.Num(); // 8
+	//FileSources.SetNum(Num);
+	//MediaPlayers.SetNum(Num);
+	//MediaTextures.SetNum(Num);
 
-	for (int32 i = 0; i < Num; ++i) {
-		if (i == 0) {
-			FileSources[i] = nullptr;
-			MediaPlayers[i] = nullptr;
-			MediaTextures[i] = nullptr;
-			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 品质[空]填充为空指针！")));
-			continue;
-		}
+	//for (int32 i = 0; i < Num; ++i) {
+	//	if (i == 0) {
+	//		FileSources[i] = nullptr;
+	//		MediaPlayers[i] = nullptr;
+	//		MediaTextures[i] = nullptr;
+	//		UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 品质[空]填充为空指针！")));
+	//		continue;
+	//	}
 
-		// 资源路径格式：/Game/Movies/<Name>.<Name>
-		FString AssetPath = FString::Printf(TEXT("/Game/Movies/%s.%s"), *ColorNames[i], *ColorNames[i]);
-		ColorNames[i] = AssetPath;
+	//	// 资源路径格式：/Game/Movies/<Name>.<Name>
+	//	FString AssetPath = FString::Printf(TEXT("/Game/Movies/%s.%s"), *ColorNames[i], *ColorNames[i]);
+	//	ColorNames[i] = AssetPath;
 
-		// 静态加载 FileMediaSource（如果该 asset 确实存在于 Content）
-		UObject* Loaded = StaticLoadObject(UFileMediaSource::StaticClass(), nullptr, *AssetPath);
-		if (!Loaded) {
-			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 加载媒体文件 [%s] 失败！%s 填充为空指针!"), *AssetPath, *AssetPath));
-			FileSources[i] = nullptr;
-			MediaPlayers[i] = nullptr;
-			MediaTextures[i] = nullptr;
-			continue;
-		}
+	//	// 静态加载 FileMediaSource（如果该 asset 确实存在于 Content）
+	//	UObject* Loaded = StaticLoadObject(UFileMediaSource::StaticClass(), nullptr, *AssetPath);
+	//	if (!Loaded) {
+	//		UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 加载媒体文件 [%s] 失败！%s 填充为空指针!"), *AssetPath, *AssetPath));
+	//		FileSources[i] = nullptr;
+	//		MediaPlayers[i] = nullptr;
+	//		MediaTextures[i] = nullptr;
+	//		continue;
+	//	}
 
-		UFileMediaSource* FileSource = Cast<UFileMediaSource>(Loaded);
-		FileSources[i] = FileSource;
+	//	UFileMediaSource* FileSource = Cast<UFileMediaSource>(Loaded);
+	//	FileSources[i] = FileSource;
 
-		// 1) 创建 MediaPlayer（用 this 作为 Outer 保持生命周期）
-		UMediaPlayer* MediaPlayer = NewObject<UMediaPlayer>(this);
-		if (MediaPlayer) {
-			// 注意：绑定回调（请确保回调签名与 AddDynamic 匹配）
-			//MediaPlayer->OnMediaOpened.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpened);
-			//MediaPlayer->OnMediaOpenFailed.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpenFailed);
-			MediaPlayers[i] = MediaPlayer;
-		}
-		else {
-			MediaPlayers[i] = nullptr;
-		}
+	//	// 1) 创建 MediaPlayer（用 this 作为 Outer 保持生命周期）
+	//	UMediaPlayer* MediaPlayer = NewObject<UMediaPlayer>(this);
+	//	if (MediaPlayer) {
+	//		// 注意：绑定回调（请确保回调签名与 AddDynamic 匹配）
+	//		//MediaPlayer->OnMediaOpened.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpened);
+	//		//MediaPlayer->OnMediaOpenFailed.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpenFailed);
+	//		MediaPlayers[i] = MediaPlayer;
+	//	}
+	//	else {
+	//		MediaPlayers[i] = nullptr;
+	//	}
 
-		// 2) 创建 MediaTexture 并绑定到 Player（若需要显示）
-		UMediaTexture* MediaTexture = NewObject<UMediaTexture>(this);
-		if (MediaTexture && MediaPlayer) {
-			MediaTexture->SetMediaPlayer(MediaPlayer);
-			// UpdateResource 可使渲染资源更新，但通常在设置材质时也会被调用
-			//MediaTexture->UpdateResource();
-			MediaTextures[i] = MediaTexture;
-		}
-		else {
-			MediaTextures[i] = nullptr;
-			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: MediaTexture 并绑定到 Player [%s] 失败！MediaTextures 填充为空指针!"), *AssetPath));
-		}
-		UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 媒体初始化成功[%s]!"), *AssetPath));
-	}
-
-	//FString FilePath = FString::Printf(TEXT(""), *_ImageName, *_ImageName);
-	//UObject* Loaded = StaticLoadObject(UFileMediaSource::StaticClass(), nullptr, *FilePath);
-	//if (!Loaded) {
-	//	UEtytl::DebugLog(FString::Printf(TEXT("UGoodsUserWidget::SetMediaTexture: 加载媒体文件[%s]失败!"), *FilePath));
-	//	_Image->SetRenderOpacity(0.f);
-	//	return;
+	//	// 2) 创建 MediaTexture 并绑定到 Player（若需要显示）
+	//	UMediaTexture* MediaTexture = NewObject<UMediaTexture>(this);
+	//	if (MediaTexture && MediaPlayer) {
+	//		MediaTexture->SetMediaPlayer(MediaPlayer);
+	//		// UpdateResource 可使渲染资源更新，但通常在设置材质时也会被调用
+	//		//MediaTexture->UpdateResource();
+	//		MediaTextures[i] = MediaTexture;
+	//	}
+	//	else {
+	//		MediaTextures[i] = nullptr;
+	//		UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: MediaTexture 并绑定到 Player [%s] 失败！MediaTextures 填充为空指针!"), *AssetPath));
+	//	}
+	//	UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::Init: 媒体初始化成功[%s]!"), *AssetPath));
 	//}
 
-	//// 1) 创建 MediaPlayer
-	//MediaPlayerQualityLoadAnimation = NewObject<UMediaPlayer>(this);
-	//if (MediaPlayerQualityLoadAnimation) {
-	//	MediaPlayerQualityLoadAnimation->OnMediaOpened.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpened);
-	//	MediaPlayerQualityLoadAnimation->OnMediaOpenFailed.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpenFailed);
-	//}
+	////FString FilePath = FString::Printf(TEXT(""), *_ImageName, *_ImageName);
+	////UObject* Loaded = StaticLoadObject(UFileMediaSource::StaticClass(), nullptr, *FilePath);
+	////if (!Loaded) {
+	////	UEtytl::DebugLog(FString::Printf(TEXT("UGoodsUserWidget::SetMediaTexture: 加载媒体文件[%s]失败!"), *FilePath));
+	////	_Image->SetRenderOpacity(0.f);
+	////	return;
+	////}
 
-	//// 2) 创建 MediaTexture 并绑定到 Player
-	//MediaTextureQualityLoadAnimation = NewObject<UMediaTexture>(this);
-	//MediaTextureQualityLoadAnimation->SetMediaPlayer(MediaPlayerQualityLoadAnimation);
-	//MediaTextureQualityLoadAnimation->UpdateResource();
+	////// 1) 创建 MediaPlayer
+	////MediaPlayerQualityLoadAnimation = NewObject<UMediaPlayer>(this);
+	////if (MediaPlayerQualityLoadAnimation) {
+	////	MediaPlayerQualityLoadAnimation->OnMediaOpened.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpened);
+	////	MediaPlayerQualityLoadAnimation->OnMediaOpenFailed.AddDynamic(this, &UGoodsUserWidget::HandleMediaOpenFailed);
+	////}
 
-	//// 3) 创建 FileMediaSource 并设置路径
-	////FileSourceQualityLoadAnimation = NewObject<UFileMediaSource>();
-	////FileSourceQualityLoadAnimation->SetFilePath(FilePath); // 绝对路径或项目内相对路径
-	//FileSourceQualityLoadAnimation = Cast<UFileMediaSource>(Loaded);
+	////// 2) 创建 MediaTexture 并绑定到 Player
+	////MediaTextureQualityLoadAnimation = NewObject<UMediaTexture>(this);
+	////MediaTextureQualityLoadAnimation->SetMediaPlayer(MediaPlayerQualityLoadAnimation);
+	////MediaTextureQualityLoadAnimation->UpdateResource();
+
+	////// 3) 创建 FileMediaSource 并设置路径
+	//////FileSourceQualityLoadAnimation = NewObject<UFileMediaSource>();
+	//////FileSourceQualityLoadAnimation->SetFilePath(FilePath); // 绝对路径或项目内相对路径
+	////FileSourceQualityLoadAnimation = Cast<UFileMediaSource>(Loaded);
 }
 
 bool ULootGrabbingGameInstance::ExtractProbabilities(const TSharedPtr<FJsonObject>& _GameConfig, TArray<double>& OutProbabilities)
@@ -538,13 +539,13 @@ void ULootGrabbingGameInstance::SaveConfigFile()
 	FString ErrorMessage;
 	if (!UEtytl::WriteJsonFile(*FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Config/Config.json")), GameConfig, ErrorMessage)) {
 		if (ErrorMessage.Equals(TEXT("文件错误"))) { //没有文件
-			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::CreateConfigFile: 写入文件[Config.json]错误!")), FColor::Red);
+			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::SaveConfigFile: 写入文件[Config.json]错误!")), FColor::Red);
 		}
 		else if (ErrorMessage.Equals(TEXT("非文件错误"))) { //Json格式错误
-			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::CreateConfigFile: Json格式错误!")), FColor::Red);
+			UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::SaveConfigFile: Json格式错误!")), FColor::Red);
 		}
 
 		return;
 	}
-	UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::CreateConfigFile: 文件创建成功!")), FColor::Yellow);
+	UEtytl::DebugLog(FString::Printf(TEXT("ULootGrabbingGameInstance::SaveConfigFile: 文件创建成功!")), FColor::Yellow);
 }

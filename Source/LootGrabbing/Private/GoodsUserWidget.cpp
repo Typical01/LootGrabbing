@@ -26,29 +26,25 @@ void UGoodsUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
     }
 
     UTGoods* GoodsObject = Cast<UTGoods>(ListItemObject);
+    MediaSourceIndex = GoodsObject->QuilityTransformInt();
     Slot = GoodsObject->GetSlot(); // 格数
     SlotWidth = GoodsObject->GetSlot() / GoodsObject->GetSlotLength(); // 格数: 高
     HorizontalPutState = FVector2D(130.8f * GoodsObject->GetSlotLength(), 130.8f * SlotWidth); // 水平显示大小
     VerticalPutState = FVector2D(130.8f * SlotWidth, 130.8f * GoodsObject->GetSlotLength()); // 垂直显示大小
 
     //UEtytl::DebugLog(TEXT("UGoodsUserWidget::NativeOnListItemObjectSet: 转换<UTGoods>成功!"), FColor::Green);
-    if (GoodsObject->GetName().Equals(TEXT("空"))) {
-        bIsNone = true;
+    if (MediaSourceIndex == -1) return; //其他
+    if (MediaSourceIndex == 0) {
         TextBlockGoodsName->SetText(FText::FromString(TEXT("")));
     }
     else {
-        bIsNone = false;
         TextBlockGoodsName->SetText(FText::FromString(GoodsObject->GetName()));
 
         //格式化: 搜索背景
-        if (GoodsObject->GetPutState() == PutState::Horizontal || GoodsObject->GetPutState() == PutState::None) {
+        if (GoodsObject->GetPutState() != PutState::Vertical) {
             if (Slot == GoodsSlot::Slot_4) {
-                FString GoodsName = GoodsObject->UGoods::GetName();
-                if (GoodsName.Equals(TEXT("滑膛枪展示品"))) {
+                if (GoodsObject->UGoods::GetName().Equals(TEXT("滑膛枪展示品"))) {
                     SlotString = FString::Printf(TEXT("%dH"), Slot);
-                }
-                else {
-                    SlotString = FString::Printf(TEXT("%d"), Slot);
                 }
             }
             SlotString = FString::Printf(TEXT("%d"), Slot);
@@ -58,7 +54,6 @@ void UGoodsUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
         }
     }
 
-    MediaSourceIndex = GoodsObject->QuilityTransformInt();
     LoadGoodsImage(GoodsObject);
 
     IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
@@ -73,58 +68,109 @@ void UGoodsUserWidget::NativeOnItemSelectionChanged(bool bIsSelected)
 
 void UGoodsUserWidget::LoadGoodsImage(UTGoods* _Goods)
 {
-    if (!bIsNone) {
+    if (!IsValid(ImageGoods)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageGoods 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageGoodsQualityColor)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageGoodsQualityColor 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageSlotColor)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageSlotColor 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageSlotBackgroundColor)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageSlotBackgroundColor 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(TextBlockGoodsName)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: TextBlockGoodsName 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageLoadAnimation)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageLoadAnimation 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageLoadAnimationIcon)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageLoadAnimationIcon 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageLoadAnimationQuality)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageLoadAnimationQuality 无效!"), FColor::Red);
+        return;
+    }
+    if (!IsValid(ImageLoadAnimationQualityBorder)) {
+        UEtytl::DebugLog(TEXT("UGoodsUserWidget::LoadGoodsImage: ImageLoadAnimationQualityBorder 无效!"), FColor::Red);
+        return;
+    }
+
+    if (MediaSourceIndex != 0) {
+        FLinearColor QuilityColor(1.f, 1.f, 1.f, 1.f);
+        FLinearColor QuilityHighlightColor(1.f, 1.f, 1.f, 1.f);
+        if (MediaSourceIndex == 1) { // 1: 白
+            QuilityColor = FLinearColor(51.f / 255.f, 51.f / 255.f, 51.f / 255.f, 0.28f);
+        }
+        else if (MediaSourceIndex == 2) { // 2: 绿
+            QuilityColor = FLinearColor(5.1f / 255.f, 25.5f / 255.f, 5.1f / 255.f, 0.28f);
+        }
+        else if (MediaSourceIndex == 3) { // 3: 蓝
+            QuilityColor = FLinearColor(14.f / 255.f, 51.f / 255.f, 102.f / 255.f, 0.28f);
+        }
+        else if (MediaSourceIndex == 4) { // 4: 紫
+            QuilityColor = FLinearColor(34.425f / 255.f, 14.f / 255.f, 51.f / 255.f, 0.28f);
+            QuilityHighlightColor = FLinearColor(34.425f / 255.f, 14.f / 255.f, 51.f / 255.f, 1.f);
+        }
+        else if (MediaSourceIndex == 5) { // 5: 金
+            QuilityColor = FLinearColor(204.f / 255.f, 102.f / 255.f, 14.f / 255.f, 0.28f);
+            QuilityHighlightColor = FLinearColor(204.f / 255.f, 102.f / 255.f, 14.f / 255.f, 1.f);
+        }
+        else if (MediaSourceIndex >= 6) { // 6~7: 红/橙
+            QuilityColor = FLinearColor(255.f / 255.f, 14.f / 255.f, 14.f / 255.f, 0.28f);
+            QuilityHighlightColor = FLinearColor(255.f / 255.f, 14.f / 255.f, 14.f / 255.f, 1.f);
+        }
+
         if (_Goods->bIsPlay) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/Search/{0}.{1}")),
-                ImageLoadAnimation, SlotString, 1.25f);
-            SetTexture(_Goods, FString(TEXT("/Game/Image/Search/Icon/{0}.{0}")),
-                ImageLoadAnimationIcon, SlotString, 1.25f);
+            SetTexture(ImageLoadAnimation, _Goods, FString(TEXT("/Game/Image/Search/{0}.{1}")),
+                SlotString, 1.25f);
+            SetTexture(ImageLoadAnimationIcon, _Goods, FString(TEXT("/Game/Image/Search/Icon/{0}.{1}")),
+                SlotString, 1.25f);
+            SetTexture(ImageLoadAnimationQuality, _Goods, FString(TEXT("/Game/Image/Search/VFX/{0}.{1}")),
+                TEXT("Default"), 0.f, true, QuilityHighlightColor);
+            SetTexture(ImageLoadAnimationQualityBorder, _Goods, FString(TEXT("/Game/Image/Search/VFX/{0}.{1}")),
+                TEXT("Border"), 0.f, true, QuilityHighlightColor);
         }
         else {
-            if (ImageLoadAnimation) ImageLoadAnimation->SetRenderOpacity(0.f);
+            ImageLoadAnimationIcon->SetRenderOpacity(0.f);
+            ImageLoadAnimationQuality->SetRenderOpacity(0.f);
+            ImageLoadAnimationQualityBorder->SetRenderOpacity(0.f);
+            ImageLoadAnimation->SetRenderOpacity(0.f);
         }
 
-        if (ImageGoods) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/Goods/{0}.{1}")), ImageGoods, _Goods->GetName(), 1.25f);
-        }
-        if (ImageGoodsQualityColor) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/Quility/{0}.{1}")), ImageGoodsQualityColor, _Goods->GetQuility(), Opacity);
-        }
-        //if (ImageGoodsSlotBorder) {
-        //    ImageGoodsSlotBorder->SetColorAndOpacity(FLinearColor(37.f / 255.f, 37.f / 255.f, 37.f / 255.f, 1.0f));
-        //}
-        //SetTexture(_Goods, FString(TEXT("/Game/Image/{0}.{1}")), ImageGoodsSlotBorder, FString(TEXT("容器槽边框")));
-        if (ImageSlotColor) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/{0}.{1}")), ImageSlotColor, FString(TEXT("容器格子")), 1.0f, false);
-            ImageSlotColor->SetColorAndOpacity(FLinearColor(37.f, 37.f, 37.f, 0.7f));
-        }
-        if (ImageSlotBackgroundColor) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/{0}.{1}")), ImageSlotBackgroundColor, FString(TEXT("渐变背景")), 1.25f, false);
-            ImageSlotBackgroundColor->SetColorAndOpacity(FLinearColor(0.f, 0.f, 0.f, 1.0f));
-        }
+        SetTexture(ImageGoods, _Goods, FString(TEXT("/Game/Image/Goods/{0}.{1}")), _Goods->GetName(), 1.25f);
+        SetTexture(ImageGoodsQualityColor, _Goods, FString(TEXT("/Game/Image/Quility/{0}.{1}")), TEXT("Default"), 1.f, true, QuilityColor);
+        
+        /*SetTexture(ImageSlotColor, _Goods, FString(TEXT("/Game/Image/{0}.{1}")), FString(TEXT("容器格子")),
+            1.0f, false, FLinearColor(37.f / 255.f, 37.f / 255.f, 37.f / 255.f, 0.7f));
+        SetTexture(ImageSlotBackgroundColor, _Goods, FString(TEXT("/Game/Image/{0}.{1}")), FString(TEXT("渐变背景")),
+            1.25f, false, FLinearColor(0.f, 0.f, 0.f, 1.0f));*/
     }
     else {
-        if (ImageLoadAnimationIcon) ImageLoadAnimationIcon->SetRenderOpacity(0.f);
-        if (ImageLoadAnimation) ImageLoadAnimation->SetRenderOpacity(0.f);
-        if (ImageGoods) ImageGoods->SetRenderOpacity(0.f);
-        if (ImageGoodsQualityColor) ImageGoodsQualityColor->SetRenderOpacity(0.f);
+        ImageLoadAnimationIcon->SetRenderOpacity(0.f);
+        ImageLoadAnimationQuality->SetRenderOpacity(0.f);
+        ImageLoadAnimationQualityBorder->SetRenderOpacity(0.f);
+        ImageLoadAnimation->SetRenderOpacity(0.f);
+        ImageGoods->SetRenderOpacity(0.f);
+        ImageGoodsQualityColor->SetRenderOpacity(0.f);
 
-        if (ImageSlotColor) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/{0}.{1}")), ImageSlotColor, FString(TEXT("容器格子")), 1.0f, false);
-            ImageSlotColor->SetColorAndOpacity(FLinearColor(37.f, 37.f, 37.f, 0.7f));
-        }
-        if (ImageSlotBackgroundColor) {
-            SetTexture(_Goods, FString(TEXT("/Game/Image/{0}.{1}")), ImageSlotBackgroundColor, FString(TEXT("渐变背景")), 1.25f, false);
-            ImageSlotBackgroundColor->SetColorAndOpacity(FLinearColor(0.f, 0.f, 0.f, 1.0f));
-        }
-
-        //if (ImageGoodsSlotBorder) ImageGoodsSlotBorder->SetRenderOpacity(0.f);
-        //if (ImageSlotColor) ImageSlotColor->SetRenderOpacity(0.f);
-        //if (ImageSlotBackgroundColor) ImageSlotBackgroundColor->SetRenderOpacity(0.f);
+        //SetTexture(ImageSlotColor, _Goods, FString(TEXT("/Game/Image/{0}.{1}")), FString(TEXT("容器格子")),
+        //    1.0f, false, FLinearColor(37.f / 255.f, 37.f / 255.f, 37.f / 255.f, 0.7f));
+        //SetTexture(ImageSlotBackgroundColor, _Goods, FString(TEXT("/Game/Image/{0}.{1}")), FString(TEXT("渐变背景")),
+        //    1.25f, false, FLinearColor(0.f, 0.f, 0.f, 1.0f));
     }
 }
 
-void UGoodsUserWidget::SetTexture(UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName, float _Opacity, bool bIsZoom)
+void UGoodsUserWidget::SetTexture(UImage* _Image, UTGoods* _Goods, FString _TexttureForm, FString _ImageName, float _Opacity, bool bIsZoom, FLinearColor LinearColor)
 {
     if (!_TexttureForm.Equals(TEXT(""))) {
         FString TexturePath = FString::Format(*_TexttureForm, { *_ImageName, *_ImageName });
@@ -142,13 +188,13 @@ void UGoodsUserWidget::SetTexture(UTGoods* _Goods, FString _TexttureForm, UImage
             }
             else {
                 if (_Goods->GetPutState() == PutState::Vertical) {
-                    NewBrush.ImageSize = 130.8f;
+                    NewBrush.ImageSize = FVector2D(130.8f, 130.8f);
                 }
                 else {
-                    NewBrush.ImageSize = 130.8f;
-                    _Image->SetBrush(NewBrush); // 将 brush 应用到 UImage
+                    NewBrush.ImageSize = FVector2D(130.8f, 130.8f);
                 }
             }
+            NewBrush.TintColor = FSlateColor(LinearColor);
             _Image->SetBrush(NewBrush); // 将 brush 应用到 UImage
             _Image->SetRenderOpacity(_Opacity);
             //UEtytl::DebugLog(TEXT("UGoodsUserWidget::SetTexture: 加载物品图像成功!"), FColor::Green);
@@ -165,17 +211,17 @@ void UGoodsUserWidget::SetTexture(UTGoods* _Goods, FString _TexttureForm, UImage
             }
             else {
                 OldBrush.ImageSize = HorizontalPutState;
-                _Image->SetBrush(OldBrush); // 将 brush 应用到 UImage
             }
+            _Image->SetBrush(OldBrush); // 将 brush 应用到 UImage
         }
         else {
             if (_Goods->GetPutState() == PutState::Vertical) {
-                OldBrush.ImageSize = 130.8f;
+                OldBrush.ImageSize = FVector2D(130.8f, 130.8f);
             }
             else {
-                OldBrush.ImageSize = 130.8f;
-                _Image->SetBrush(OldBrush); // 将 brush 应用到 UImage
+                OldBrush.ImageSize = FVector2D(130.8f, 130.8f);
             }
+           _Image->SetBrush(OldBrush); // 将 brush 应用到 UImage
         }
     }
 }

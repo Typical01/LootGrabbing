@@ -50,7 +50,6 @@ bool UContainerQueueUserWidget::Init()
     //UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::Initialize: 绑定 TileView成功!")), FColor::Green);
 
 	GachaGame = new Gacha();
-	TArrayWareHouseSlot.Init(0, WareHouseSlotSize);
 	LoadSettingConfigFile();
 	LootGrabbingGameInstance->ExtractProbabilities(LootGrabbingGameInstance->GameConfig, ProbabilitiesArray);
 
@@ -85,11 +84,26 @@ void UContainerQueueUserWidget::InitContainer()
 	EndSlot = 0;
 	GachaNum = 0;
 
-	//填充空
+	//容器: 填充空
 	for (int32 Index = 0; Index < TArrayContainerSlot.Num(); Index++) {
+		UTGoods* GoodsNone = NewObject<UTGoods>(this);
+		GoodsNone->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
+		GoodsNone->bIsPlay = false;
+		LootGrabbingGameInstance->TileViewDataManageContainerSlot->Add(GoodsNone);
+	}
+}
+
+void UContainerQueueUserWidget::InitWareHouseContainer()
+{
+	//重置状态: 格子索引/列表视图
+	TArrayWareHouseSlot.Init(0, WareHouseSlotSize);
+	LootGrabbingGameInstance->TileViewDataManageWareHouseSlot->Empty();
+
+	//仓库: 填充空
+	for (int32 Index = LootGrabbingGameInstance->TileViewDataManageWareHouseSlot->Num(); Index < TArrayWareHouseSlot.Num(); Index++) {
 		UTGoods* GoodsNull = NewObject<UTGoods>(this);
 		GoodsNull->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
-		LootGrabbingGameInstance->TileViewDataManageContainerSlot->Add(GoodsNull);
+		LootGrabbingGameInstance->TileViewDataManageWareHouseSlot->Add(GoodsNull);
 	}
 }
 
@@ -101,15 +115,6 @@ int32 UContainerQueueUserWidget::StartGacha()
 	}
 
 	if (EndSlot - 1 >= GachaGame->GetRawPrize().Num()) {
-		return 0;
-	}
-
-	if (Property >= ExpendProperty) {
-		Property -= ExpendProperty; //消耗哈夫币
-		/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::StartGacha: 抽奖成功, 剩余资产[%d]."),
-			Property), FColor::Green);*/
-	}
-	else {
 		return 0;
 	}
 
@@ -183,58 +188,47 @@ bool UContainerQueueUserWidget::FillListView(int32 _Num)
 		}
     }
 
-	//填充空
-	//for (int32 Index = LootGrabbingGameInstance->TileViewDataManageWareHouseSlot->Num(); Index < TArrayWareHouseSlot.Num(); Index++) {
-	//	UTGoods* GoodsNull = NewObject<UTGoods>(this);
-	//	GoodsNull->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
-	//	LootGrabbingGameInstance->TileViewDataManageWareHouseSlot->Add(GoodsNull);
-	//}
-	////填充仓库
-	//for (int32 i = 0; i < TempWareHouseSlot.Num(); i++) {
-	//	UTGoods* GoodsObjectPtr = TempWareHouseSlot[i];
+	//填充仓库
+	for (int32 i = 0; i < TempWareHouseSlot.Num(); i++) {
+		UTGoods* GoodsObjectPtr = TempWareHouseSlot[i];
 
-	//	for (int32 SlotIndex = i + WareHouseSlotEndGoodsIndex; SlotIndex < TArrayWareHouseSlot.Num() - i;) {
-	//		GoodsObjectPtr->SetCurrentSlotIndex(SlotIndex);
-	//		TArray<int32> GoodsOccupySlot = OccupySlot(GoodsObjectPtr, WareHouseSlotWidth, WareHouseSlotSize / WareHouseSlotWidth);
-	//		int32 MoveX = SlotIndex % WareHouseSlotWidth;
-	//		int32 MoveY = SlotIndex / WareHouseSlotWidth;
-	//		if (MoveGoods(GoodsObjectPtr, FVector2D(MoveX, MoveY), GoodsOccupySlot, WareHouseSlotWidth, WareHouseSlotSize / WareHouseSlotWidth)) {
-	//			if (IsContainerSlotValid(GoodsObjectPtr, GoodsOccupySlot, TArrayWareHouseSlot)) {
-	//				FillSlot(GoodsObjectPtr, GoodsOccupySlot, TArrayWareHouseSlot, LootGrabbingGameInstance->TileViewDataManageWareHouseSlot);
-	//				PutState PutState = GoodsObjectPtr->GetPutState();
-	//				if (PutState == PutState::Vertical) {
-	//					SlotIndex += GoodsObjectPtr->GetSlot() / GoodsObjectPtr->GetSlotLength();
-	//				}
-	//				else {
-	//					SlotIndex += GoodsObjectPtr->GetSlotLength();
-	//				}
-	//				SlotIndex++;
-	//				break;
-	//			}
-	//			else {
-	//				//容器占用
-	//				/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillListView: [仓库]容器占用[%s]|位置[%d]!"),
-	//					*GoodsObjectPtr->GetName(), GoodsObjectPtr->GetCurrentSlotIndex()), FColor::Red);*/
-	//			}
-	//		}
-	//		else {
-	//			//移动物品失败
-	//			/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillListView: [仓库]移动物品[%s]|位置[%d]失败!"),
-	//				*GoodsObjectPtr->GetName(), GoodsObjectPtr->GetCurrentSlotIndex()), FColor::Red);*/
-	//		}
-	//		SlotIndex++;
+		for (int32 SlotIndex = i + WareHouseSlotEndGoodsIndex; SlotIndex < TArrayWareHouseSlot.Num() - i;) {
+			GoodsObjectPtr->SetCurrentSlotIndex(SlotIndex);
+			TArray<int32> GoodsOccupySlot = OccupySlot(GoodsObjectPtr, WareHouseSlotWidth, WareHouseSlotSize / WareHouseSlotWidth);
+			int32 MoveX = SlotIndex % WareHouseSlotWidth;
+			int32 MoveY = SlotIndex / WareHouseSlotWidth;
+			if (MoveGoods(GoodsObjectPtr, FVector2D(MoveX, MoveY), GoodsOccupySlot, WareHouseSlotWidth, WareHouseSlotSize / WareHouseSlotWidth)) {
+				if (IsContainerSlotValid(GoodsObjectPtr, GoodsOccupySlot, TArrayWareHouseSlot)) {
+					FillSlot(GoodsObjectPtr, GoodsOccupySlot, TArrayWareHouseSlot, LootGrabbingGameInstance->TileViewDataManageWareHouseSlot);
+					PutState PutState = GoodsObjectPtr->GetPutState();
+					if (PutState == PutState::Vertical) {
+						SlotIndex += GoodsObjectPtr->GetSlot() / GoodsObjectPtr->GetSlotLength();
+					}
+					else {
+						SlotIndex += GoodsObjectPtr->GetSlotLength();
+					}
+					SlotIndex++;
+					break;
+				}
+				else {
+					//容器占用
+					/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillListView: [仓库]容器占用[%s]|位置[%d]!"),
+						*GoodsObjectPtr->GetName(), GoodsObjectPtr->GetCurrentSlotIndex()), FColor::Red);*/
+				}
+			}
+			else {
+				//移动物品失败
+				/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillListView: [仓库]移动物品[%s]|位置[%d]失败!"),
+					*GoodsObjectPtr->GetName(), GoodsObjectPtr->GetCurrentSlotIndex()), FColor::Red);*/
+			}
+			SlotIndex++;
 
-	//		if (SlotIndex >= TArrayWareHouseSlot.Num()) //末尾
-	//			WareHouseSlotEndGoodsIndex = GoodsOccupySlot[0];
-	//	}
-	//}
-	/*if (TileViewDataManageWareHouseSlot->GetList().IsEmpty()) {
-		for (int32 i = 0; i < WareHouseSlotSize; i++) {
-			UTGoods* GoodsSpace = NewObject<UTGoods>(this);
-			GoodsSpace->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
-			TileViewDataManageWareHouseSlot->Add(GoodsSpace);
+			if (SlotIndex >= TArrayWareHouseSlot.Num()) {//末尾
+				UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillListView: [仓库]已满[%d]! 添加物品失败!"), SlotIndex), FColor::Red);
+				break;
+			}
 		}
-	}*/
+	}
 	return true;
 }
 
@@ -341,9 +335,10 @@ void UContainerQueueUserWidget::FillSlot(UTGoods* _Goods, TArray<int32>& _Occupy
 	/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillSlot: 填充物品[%d]."),
 		_OccupySlot[0]), FColor::Red);*/
 	for (int32 Index = 1; Index < _OccupySlot.Num(); Index++) {
-		UTGoods* GoodsSpace = NewObject<UTGoods>(this);
-		GoodsSpace->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
-		_TileViewDataManage->Set(_OccupySlot[Index], GoodsSpace);
+		UTGoods* GoodsNone = NewObject<UTGoods>(this);
+		GoodsNone->Init(TEXT("空"), TEXT("空"), GoodsSlot::Slot_1, 1, -1);
+		GoodsNone->bIsPlay = false;
+		_TileViewDataManage->Set(_OccupySlot[Index], GoodsNone);
 		_TArrayContainerSlot[_OccupySlot[Index]] = 1;
 		/*UEtytl::DebugLog(FString::Printf(TEXT("UContainerQueueUserWidget::FillSlot: 填充空[%d]."),
 			_OccupySlot[Index]), FColor::Red);*/

@@ -37,6 +37,12 @@ public:
 	*/
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ImageLoadAnimationQualityBorder; //图像: 物品加载动画品质边框
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ImageLoadAnimationQuality; //图像: 物品加载动画品质覆层
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ImageLoadAnimationIcon; //图像: 物品加载动画图标
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -80,11 +86,11 @@ public:
 	FVector2D HorizontalPutState;
 	FVector2D VerticalPutState;
 	FString SlotString;
-	bool bIsNone;
 
 public:
-	void SetTexture(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f, bool bIsZoom = true);
-	void SetMaterial(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.f);
-	void SetMediaTexture(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName, float _Opacity = 1.f);
+	void SetTexture(UImage* _Image, class UTGoods* _Goods, FString _TexttureForm, FString _ImageName = FString(), 
+		float _Opacity = 1.25f, bool bIsZoom = true, FLinearColor LinearColor = FLinearColor(1.f, 1.f, 1.f, 1.f));
+	void SetMaterial(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName = FString(), float _Opacity = 1.25f);
+	void SetMediaTexture(class UTGoods* _Goods, FString _TexttureForm, UImage* _Image, FString _ImageName, float _Opacity = 1.25f);
 	void LoadGoodsImage(class UTGoods* _Goods);
 };

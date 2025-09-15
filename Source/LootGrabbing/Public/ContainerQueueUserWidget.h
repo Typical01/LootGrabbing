@@ -80,9 +80,12 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gacha")
 	bool Init();
-	//容器初始化
+	//初始化: 容器
 	UFUNCTION(BlueprintCallable, Category = "Gacha")
 	void InitContainer();
+	//初始化: 仓库容器
+	UFUNCTION(BlueprintCallable, Category = "Gacha")
+	void InitWareHouseContainer();
 	//开始抽卡
 	UFUNCTION(BlueprintCallable, Category = "Gacha")
 	int32 StartGacha();

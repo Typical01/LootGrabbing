@@ -1,15 +1,7 @@
 ﻿Tools::Init: 初始化成功!
-﻿[2025.09.14-14.25.00]UTypicalToolBPLib::CreateDirectory: 文件夹已存在：[../../../../ProgramProject/UE_Projects/LootGrabbing/Content/Config]
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 配置文件读取成功!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 品质[空]填充为空指针！
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/白.白]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/绿.绿]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/蓝.蓝]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/紫.紫]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/金.金]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/红.红]!
-﻿[2025.09.14-14.25.00]ULootGrabbingGameInstance::Init: 媒体初始化成功[/Game/Movies/橙.橙]!
-﻿[2025.09.14-14.25.01]UContainerQueueUserWidget::Initialize: 
-﻿[2025.09.14-14.25.01]UContainerQueueUserWidget::Initialize: 游戏开始!
-﻿[2025.09.14-14.25.01]UContainerQueueUserWidget::LoadSettingConfigFile: 加载设置的配置文件!
-﻿[2025.09.14-14.25.01]总概率: 1
+﻿[2025.09.15-13.53.40]UTypicalToolBPLib::CreateDirectory: 文件夹已存在：[../../../../ProgramProject/UE_Projects/LootGrabbing/Content/Config]
+﻿[2025.09.15-13.53.40]ULootGrabbingGameInstance::Init: 配置文件读取成功!
+﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::Initialize: 
+﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::Initialize: 游戏开始!
+﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::LoadSettingConfigFile: 加载设置的配置文件!
+﻿[2025.09.15-13.53.41]总概率: 1

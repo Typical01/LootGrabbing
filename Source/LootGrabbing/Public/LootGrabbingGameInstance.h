@@ -44,12 +44,12 @@ public:
 	TArray<UTGoods*> WhiteGoodsArray;
 
 	// 数组: 0(空), 1-7(颜色)
-	UPROPERTY()
+	/*UPROPERTY()
 	TArray<UFileMediaSource*> FileSources;
 	UPROPERTY()
 	TArray<UMediaPlayer*> MediaPlayers;
 	UPROPERTY()
-	TArray<UMediaTexture*> MediaTextures;
+	TArray<UMediaTexture*> MediaTextures;*/
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

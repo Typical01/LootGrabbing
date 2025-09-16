@@ -1,7 +1,1 @@
 ﻿Tools::Init: 初始化成功!
-﻿[2025.09.15-13.53.40]UTypicalToolBPLib::CreateDirectory: 文件夹已存在：[../../../../ProgramProject/UE_Projects/LootGrabbing/Content/Config]
-﻿[2025.09.15-13.53.40]ULootGrabbingGameInstance::Init: 配置文件读取成功!
-﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::Initialize: 
-﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::Initialize: 游戏开始!
-﻿[2025.09.15-13.53.41]UContainerQueueUserWidget::LoadSettingConfigFile: 加载设置的配置文件!
-﻿[2025.09.15-13.53.41]总概率: 1

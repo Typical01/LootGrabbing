@@ -9,6 +9,8 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Components/SizeBox.h"
+#include "Components/Button.h"
 #include "MediaPlayer.h"
 #include "MediaTexture.h"
 #include "FileMediaSource.h"
@@ -36,6 +38,12 @@ public:
 	* 控件
 	*/
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	USizeBox* SizeBoxGoods; //尺寸框
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* ButtonGoods; //按钮: 物品
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ImageLoadAnimationQualityBorder; //图像: 物品加载动画品质边框
 

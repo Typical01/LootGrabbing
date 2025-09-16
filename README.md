@@ -1,5 +1,8 @@
 # 《LootGrabbing》免责声明
 
+## 官网
+我们鼓励所有玩家支持官方作品.请访问《三角洲行动》官方网址: https://df.qq.com/main.shtml 获取最准确的信息和最佳的游戏体验.
+
 ## 项目性质声明
 本作品为个人非商业性质的自制单机内容, 仅用于个人学习、技术练习及兴趣交流, 不会进行任何形式盈利/售卖, 包括但不限于收费下载, 线下交易等也未以任何名义向他人收取费用. 
 
@@ -13,10 +16,9 @@
 ## 使用限制
 本作品仅为个人与学习交流使用, 严禁任何第三方以任何形式获取、转载、传播或用于商业用途由此产生的一切版权问题及法律责任, 均由第三方自行承担.
 
-## 官网
-我们鼓励所有玩家支持官方作品.请访问《三角洲行动》官方网址: https://df.qq.com/main.shtml 获取最准确的信息和最佳的游戏体验.
-
 # Disclaimer for "LootGrabbing": Translation from the Internet
+## Official Website
+We encourage all players to support the official works. Please visit the official website of "Delta Operation": https://df.qq.com/main.shtml to obtain the most accurate information and the best gaming experience.
 ## Project Nature Declaration
 This work is a self-made single-player content of a personal non-commercial nature. It is solely used for personal study, technical practice, and interest exchange, and will not be used for any form of profit/sale, including but not limited to paid downloads, offline transactions, etc. It has not charged any fees to others under any name. 
 ## Source Materials
@@ -26,5 +28,3 @@ I have only integrated and made certain modifications to the content and added g
 I fully respect the original copyrights of all materials. The creation of this work has no intention of infringing upon the intellectual property rights of others. If any original copyright holder believes that the use of this work has infringed upon their legal rights and interests, please contact me. I will immediately cease using the relevant materials and delete the corresponding content in the work. 
 ## Usage Restrictions
 This work is solely for personal and educational use. It is strictly prohibited for any third party to obtain, reproduce, disseminate or use it for commercial purposes. Any copyright issues and legal liabilities arising therefrom shall be borne by the third party themselves. 
-## Official Website
-We encourage all players to support the official works. Please visit the official website of "Delta Operation": https://df.qq.com/main.shtml to obtain the most accurate information and the best gaming experience.
